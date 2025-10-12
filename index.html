@@ -1,182 +1,142 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<!DOCTYPE html>  <html lang="pt-BR">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">  
+<title>Escala 4x4 Completa - Ero Brasil - Tucumã</title>  
+<style>  
+body {  
+  font-family: Arial, sans-serif;  
+  background: #f4f6f9;  
+  margin: 0;  
+  padding: 20px;  
+  color: #333;  
+}  
+h1 { text-align:center; margin-bottom:20px; }  .input-area { text-align:center; margin-bottom:20px; }
+input { padding:8px; font-size:16px; margin:5px; }
 
-  <title>Operação de Beneficiamento Ero Brasil Tucumã - Escala 4x4</title>
+/* Tabela principal /
+.tabela {
+width: 100%;
+border-collapse: collapse;
+text-align: center;
+font-size: 15px;
+background: white;
+border-radius: 10px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.tabela th, .tabela td { border: 1px solid #ccc; padding: 6px; }
+.tabela th {
+background: #2196F3;
+color: white;
+position: sticky;
+top: 0;
+z-index: 1;
+}
+.status-D { background: #FFF59D; } / Dia /
+.status-N { background: #90CAF9; } / Noite /
+.status-F { background: #E0E0E0; } / Folga */
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #FFFFFF;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
+/* Créditos fixos ao final */
+.creditos {
+text-align: center;
+margin-top: 40px;
+padding: 20px;
+background: #fff;
+border-radius: 12px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+color: #333;
+}
+.creditos h2 { color: #2196F3; margin-bottom: 10px; }
+.creditos p { margin: 5px 0; font-size: 15px; }
+</style>
 
-    /* Cabeçalho */
-    h1 {
-      text-align: center;
-      margin-top: 2px;
-      margin-bottom: 1px;
-      font-weight: bold;
-      font-size: 30px;
-      font-family: Arial Black;
-      color: #2A8C89;
-    }
-
-    h2 {
-      text-align: center;
-      margin-top: 1px;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    /* Input */
-    .input-area {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    input {
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    /* Tabela principal */
-    .tabela {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-      font-size: 15px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      overflow: hidden;
-    }
-    .tabela th, .tabela td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-    .tabela th {
-      background: #2A8C89;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-    .status-D { background: #FFEB99; } /* Dia */
-    .status-N { background: #A7D8DE; } /* Noite */
-    .status-F { background: #E5E7EB; } /* Folga */
-
-    /* Rodapé de créditos */
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #2563eb;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Logo da Usina -->
-  <div style="text-align:center; margin-bottom:10px;">
-    <img src="./logoERO.png" alt="Logo ERO Brasil" style="max-width:200px; height:auto;">
-  </div>
-
-  <h2>Tucumã</h2>
-  <h1>Escala 4x4 - Operação de Beneficiamento</h1>
-
-  <div class="input-area">
-    <label for="dataInicio"><strong>Data inicial:</strong></label>
-    <input type="date" id="dataInicio">
-  </div>
-
-  <table class="tabela" id="tabelaEscala">
-    <thead>
-      <tr>
-        <th>Data</th>
-        <th>Turma A</th>
-        <th>Turma B</th>
-        <th>Turma C</th>
-        <th>Turma D</th>
-      </tr>
-    </thead>
-    <tbody id="tabelaBody"></tbody>
-  </table>
-
-  <footer>
-    © 2025 - Desenvolvido por Alexandre Oliveira
-  </footer>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const inputData = document.getElementById("dataInicio");
-      const corpo = document.getElementById("tabelaBody");
-
-      function parseSafeDate(dateString) {
-        return new Date(dateString.replace(/-/g, "/"));
-      }
-
-      function gerarEscala() {
-        const dataInput = inputData.value;
-        if (!dataInput) {
-          alert("Selecione uma data!");
-          return;
-        }
-
-        const dataEscolhida = parseSafeDate(dataInput);
-        corpo.innerHTML = "";
-
-        const referenciaInicio = new Date("2025/10/04");
-        const basePattern = ["D", "D", "N", "N", "F", "F", "F", "F"];
-        const offsets = { A: 0, B: 2, C: 4, D: 6 };
-        const totalDias = 90;
-
-        for (let i = 0; i < totalDias; i++) {
-          const dia = new Date(dataEscolhida.getTime());
-          dia.setDate(dataEscolhida.getDate() + i);
-
-          const dataFormatada = dia.toLocaleDateString("pt-BR", {
-            weekday: 'short',
-            day: '2-digit',
-            month: '2-digit'
-          });
-
-          const diffDias = Math.floor((dia - referenciaInicio) / (1000 * 60 * 60 * 24));
-          const idx = ((diffDias % 8) + 8) % 8;
-
-          const statusA = basePattern[(idx + offsets.A) % 8];
-          const statusB = basePattern[(idx + offsets.B) % 8];
-          const statusC = basePattern[(idx + offsets.C) % 8];
-          const statusD = basePattern[(idx + offsets.D) % 8];
-
-          const linha = document.createElement("tr");
-          linha.innerHTML = `
-            <td><strong>${dataFormatada}</strong></td>
-            <td class="status-${statusA}">${statusA}</td>
-            <td class="status-${statusB}">${statusB}</td>
-            <td class="status-${statusC}">${statusC}</td>
-            <td class="status-${statusD}">${statusD}</td>
-          `;
-          corpo.appendChild(linha);
-        }
-      }
-
-      // Define data padrão (hoje)
-      const hoje = new Date();
-      const ano = hoje.getFullYear();
-      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-      const dia = String(hoje.getDate()).padStart(2, "0");
-      inputData.value = `${ano}-${mes}-${dia}`;
-
-      gerarEscala();
-      inputData.addEventListener("change", gerarEscala);
-    });
-  </script>
-</body>
+</head>  
+<body>  <h1>Escala 4x4 Completa<br>Ero Brasil - Tucumã</h1>  <div class="input-area">  
+  <label for="dataInicio">Data inicial:</label>  
+  <input type="date" id="dataInicio">  
+</div>  <table class="tabela" id="tabelaEscala">  
+  <thead>  
+    <tr>  
+      <th>Data</th>  
+      <th>Turma A</th>  
+      <th>Turma B</th>  
+      <th>Turma C</th>  
+      <th>Turma D</th>  
+    </tr>  
+  </thead>  
+  <tbody id="tabelaBody"></tbody>  
+</table>  <div class="creditos">  
+  <h2>Créditos</h2>  
+  <p><strong>Nome do App:</strong> Escala 4x4 Completa – Ero Brasil Tucumã</p>  
+  <p><strong>Versão:</strong> 4.3</p>  
+  <p><strong>Desenvolvido por:</strong> Alexandre Oliveira</p>  
+  <p><strong>Ano:</strong> 2025</p>  
+</div>  <script>  
+document.addEventListener("DOMContentLoaded", function() {  
+  const inputData = document.getElementById("dataInicio");  
+  const corpo = document.getElementById("tabelaBody");  
+  
+  function parseSafeDate(dateString) {  
+    // Safari no iPhone não reconhece "YYYY-MM-DD", mas aceita "YYYY/MM/DD"  
+    return new Date(dateString.replace(/-/g, "/"));  
+  }  
+  
+  function gerarEscala() {  
+    const dataInput = inputData.value;  
+    if (!dataInput) {  
+      alert("Selecione uma data!");  
+      return;  
+    }  
+  
+    const dataEscolhida = parseSafeDate(dataInput);  
+    corpo.innerHTML = "";  
+  
+    // formato compatível com iPhone  
+    const referenciaInicio = new Date("2025/10/04");  
+  
+    const basePattern = ["D", "D", "N", "N", "F", "F", "F", "F"];  
+    const offsets = { A: 0, B: 2, C: 4, D: 6 };  
+    const totalDias = 90;  
+  
+    for (let i = 0; i < totalDias; i++) {  
+      const dia = new Date(dataEscolhida.getTime());  
+      dia.setDate(dataEscolhida.getDate() + i);  
+  
+      const dataFormatada = dia.toLocaleDateString("pt-BR", {  
+        weekday: 'short',  
+        day: '2-digit',  
+        month: '2-digit'  
+      });  
+  
+      const diffDias = Math.floor((dia - referenciaInicio) / (1000 * 60 * 60 * 24));  
+      const idx = ((diffDias % 8) + 8) % 8;  
+  
+      const statusA = basePattern[(idx + offsets.A) % 8];  
+      const statusB = basePattern[(idx + offsets.B) % 8];  
+      const statusC = basePattern[(idx + offsets.C) % 8];  
+      const statusD = basePattern[(idx + offsets.D) % 8];  
+  
+      const linha = document.createElement("tr");  
+      linha.innerHTML = `  
+        <td><strong>${dataFormatada}</strong></td>  
+        <td class="status-${statusA}">${statusA}</td>  
+        <td class="status-${statusB}">${statusB}</td>  
+        <td class="status-${statusC}">${statusC}</td>  
+        <td class="status-${statusD}">${statusD}</td>  
+      `;  
+      corpo.appendChild(linha);  
+    }  
+  }  
+  
+  // Define data padrão (hoje)  
+  const hoje = new Date();  
+  const ano = hoje.getFullYear();  
+  const mes = String(hoje.getMonth() + 1).padStart(2, "0");  
+  const dia = String(hoje.getDate()).padStart(2, "0");  
+  inputData.value = `${ano}-${mes}-${dia}`;  
+  
+  gerarEscala();  
+  inputData.addEventListener("change", gerarEscala);  
+});  
+</script>  </body>  
 </html>
