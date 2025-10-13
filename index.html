@@ -82,11 +82,11 @@ input { text-align: center; padding:8px; font-size:16px; margin:5px; }
 document.addEventListener("DOMContentLoaded", function() {
   const inputData = document.getElementById("dataInicio");
   const corpo = document.getElementById("tabelaBody");
-  const dataMinima = new Date("2025/04/01");
-  dataMinima.setHours(0,0,0,0);
 
   function parseSafeDate(dateString) {
-    return new Date(dateString.replace(/-/g, "/"));
+    // Cria data de forma consistente: ano, mês-1, dia
+    const [ano, mes, dia] = dateString.split("-").map(Number);
+    return new Date(ano, mes - 1, dia);
   }
 
   function gerarEscala() {
@@ -97,9 +97,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     let dataEscolhida = parseSafeDate(dataInput);
-    dataEscolhida.setHours(0,0,0,0);
 
-    // Validação da data mínima
+    const dataMinima = new Date(2025, 3, 1); // 01/04/2025
     if (dataEscolhida < dataMinima) {
       alert("A data inicial não pode ser anterior a 01/04/2025!");
       inputData.value = "2025-04-01";
@@ -108,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     corpo.innerHTML = "";
 
-    const referenciaInicio = new Date("2025/10/07");
+    const referenciaInicio = new Date(2025, 9, 7); // 07/10/2025
     const basePattern = ["7h", "7h", "19h", "19h", "F", "F", "F", "F"];
     const offsets = { A: 0, B: 2, C: 4, D: 6 };
     const totalDias = 90;
@@ -145,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Data padrão (hoje ou mínima)
   const hoje = new Date();
-  const dataPadrao = hoje < dataMinima ? dataMinima : hoje;
+  const dataPadrao = hoje < new Date(2025,3,1) ? new Date(2025,3,1) : hoje;
   const ano = dataPadrao.getFullYear();
   const mes = String(dataPadrao.getMonth() + 1).padStart(2, "0");
   const dia = String(dataPadrao.getDate()).padStart(2, "0");
