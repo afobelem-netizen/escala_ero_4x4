@@ -49,29 +49,30 @@ input { text-align:center; padding:8px; font-size:16px; margin:5px; }
 
 <script>
 document.addEventListener("DOMContentLoaded",function(){
-const inputData=document.getElementById("dataInicio");
-const corpo=document.getElementById("tabelaBody");
+  const inputData=document.getElementById("dataInicio");
+  const corpo=document.getElementById("tabelaBody");
+  const dataMinima=new Date(2025,3,1); // 01/04/2025
 
-// função para converter data para número YYYYMMDD para comparação simples
-function dataParaNumero(date){
-    return date.getFullYear()*10000 + (date.getMonth()+1)*100 + date.getDate();
-}
+  // Corrige a data inicial ao carregar
+  if(!inputData.value || new Date(inputData.value) < dataMinima){
+    inputData.value="2025-04-01";
+  }
 
-// cria data segura a partir de string YYYY-MM-DD
-function criarData(dateStr){
-    const [ano,mes,dia]=dateStr.split("-").map(Number);
-    return new Date(ano,mes-1,dia);
-}
-
-function gerarEscala(){
-    if(!inputData.value){ alert("Selecione uma data!"); return;}
-    let dataEscolhida=criarData(inputData.value);
-    const dataMinima=new Date(2025,3,1); // 01/04/2025
-    if(dataParaNumero(dataEscolhida)<dataParaNumero(dataMinima)){
-        alert("A data inicial não pode ser anterior a 01/04/2025!");
+  // Corrige a data se o usuário digitar manualmente algo antes da mínima
+  inputData.addEventListener("input",()=>{
+    const partes = inputData.value.split("-");
+    if(partes.length===3){
+      const ano=parseInt(partes[0]), mes=parseInt(partes[1])-1, dia=parseInt(partes[2]);
+      const data=new Date(ano,mes,dia);
+      if(data < dataMinima){
         inputData.value="2025-04-01";
-        dataEscolhida=new Date(2025,3,1);
+      }
     }
+  });
+
+  function gerarEscala(){
+    const [ano,mes,dia] = inputData.value.split("-").map(Number);
+    const dataEscolhida=new Date(ano,mes-1,dia);
 
     corpo.innerHTML="";
 
@@ -81,36 +82,30 @@ function gerarEscala(){
     const totalDias=90;
 
     for(let i=0;i<totalDias;i++){
-        // cria nova data segura
-        const diaAtual=new Date(dataEscolhida.getFullYear(),dataEscolhida.getMonth(),dataEscolhida.getDate()+i);
+      const diaAtual=new Date(dataEscolhida.getFullYear(),dataEscolhida.getMonth(),dataEscolhida.getDate()+i);
 
-        const dataFormatada=diaAtual.toLocaleDateString("pt-BR",{weekday:'short',day:'2-digit',month:'2-digit'});
+      const dataFormatada=diaAtual.toLocaleDateString("pt-BR",{weekday:'short',day:'2-digit',month:'2-digit'});
 
-        const diffDias=Math.floor((diaAtual-referenciaInicio)/(1000*60*60*24));
-        const idx=((diffDias%8)+8)%8;
+      const diffDias=Math.floor((diaAtual-referenciaInicio)/(1000*60*60*24));
+      const idx=((diffDias%8)+8)%8;
 
-        const statusA=basePattern[(idx+offsets.A)%8];
-        const statusB=basePattern[(idx+offsets.B)%8];
-        const statusC=basePattern[(idx+offsets.C)%8];
-        const statusD=basePattern[(idx+offsets.D)%8];
+      const statusA=basePattern[(idx+offsets.A)%8];
+      const statusB=basePattern[(idx+offsets.B)%8];
+      const statusC=basePattern[(idx+offsets.C)%8];
+      const statusD=basePattern[(idx+offsets.D)%8];
 
-        const linha=document.createElement("tr");
-        linha.innerHTML=`<td><strong>${dataFormatada}</strong></td>
+      const linha=document.createElement("tr");
+      linha.innerHTML=`<td><strong>${dataFormatada}</strong></td>
         <td class="status-${statusA}">${statusA}</td>
         <td class="status-${statusB}">${statusB}</td>
         <td class="status-${statusC}">${statusC}</td>
         <td class="status-${statusD}">${statusD}</td>`;
-        corpo.appendChild(linha);
+      corpo.appendChild(linha);
     }
-}
+  }
 
-// define data padrão
-const hoje=new Date();
-const dataPadrao= dataParaNumero(hoje)<dataParaNumero(new Date(2025,3,1))? new Date(2025,3,1):hoje;
-inputData.value=`${dataPadrao.getFullYear()}-${String(dataPadrao.getMonth()+1).padStart(2,'0')}-${String(dataPadrao.getDate()).padStart(2,'0')}`;
-
-gerarEscala();
-inputData.addEventListener("change",gerarEscala);
+  gerarEscala();
+  inputData.addEventListener("change", gerarEscala);
 });
 </script>
 
