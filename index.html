@@ -2,19 +2,16 @@
 <html lang="pt-BR">
 
 <head>
-
 <link rel="apple-touch-icon" href="./logoERO.png">
 <link rel="icon" type="image/png" sizes="128x128" href="./logoERO.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./logoERO.png">
 <meta name="theme-color" content="#2A8C89">
-
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Escala 4x4</title>
 
 <style>
-
 body {
   font-family: Arial, sans-serif;
   background: white;
@@ -22,10 +19,8 @@ body {
   padding: 20px;
   color: #333;
 }
-    h1 { text-align: center; margin-top: 2px; margin-bottom: 1px; font-weight: bold; font-size: 30px; font-family: Arial Black; color: #2A8C89; }
-
+h1 { text-align: center; margin-top: 2px; margin-bottom: 1px; font-weight: bold; font-size: 30px; font-family: Arial Black; color: #2A8C89; }
 h2 { text-align: center; margin-top: 1px; margin-bottom: 2px; color: #4A5856; }
-
 h3 { text-align: center; margin-top: 8px; margin-bottom: 10px; color: #4A5856; }
 
 .input-area { text-align:center; margin-bottom:20px; }
@@ -45,7 +40,6 @@ input { text-align: center; padding:8px; font-size:16px; margin:5px; }
 .tabela th, .tabela td { border: 1px solid #D3D3D3; padding: 6px; }
 .tabela th {
   background: #2A8C89;
-  border: 1px solid #D3D3D3;
   color: white;
   position: sticky;
   top: 0;
@@ -54,24 +48,21 @@ input { text-align: center; padding:8px; font-size:16px; margin:5px; }
 .status-7h { color: blue; font-weight: bold } /* Dia */
 .status-19h { color: green; font-weight: bold} /* Noite */
 .status-F { background: #E0E0E0; } /* Folga */
-
 </style>
 </head>
-<body>
 
+<body>
 <div style="text-align:center; margin-bottom:0px;">
     <img src="./logoERO.png" alt="Logo ERO Brasil" style="max-width:200px; height:auto;">
-  </div>
+</div>
 
-  <h1>ERO BRASIL</h1>
-
-  <h2>Tucumã</h2>
-
+<h1>ERO BRASIL</h1>
+<h2>Tucumã</h2>
 <h3>Escala de turno 4x4</h3>
 
 <div class="input-area">
   <label for="dataInicio">Entre com a data inicial para gerar um período de 90 dias</label>
-  <input type="date" id="dataInicio">
+  <input type="date" id="dataInicio" min="2025-04-01">
 </div>
 
 <table class="tabela" id="tabelaEscala">
@@ -91,9 +82,9 @@ input { text-align: center; padding:8px; font-size:16px; margin:5px; }
 document.addEventListener("DOMContentLoaded", function() {
   const inputData = document.getElementById("dataInicio");
   const corpo = document.getElementById("tabelaBody");
+  const dataMinima = new Date("2025/04/01");
 
   function parseSafeDate(dateString) {
-    // Safari no iPhone não reconhece "YYYY-MM-DD", mas aceita "YYYY/MM/DD"
     return new Date(dateString.replace(/-/g, "/"));
   }
 
@@ -104,12 +95,17 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    const dataEscolhida = parseSafeDate(dataInput);
+    let dataEscolhida = parseSafeDate(dataInput);
+
+    if (dataEscolhida < dataMinima) {
+      alert("A data inicial não pode ser anterior a 01/04/2025!");
+      inputData.value = "2025-04-01";
+      dataEscolhida = dataMinima;
+    }
+
     corpo.innerHTML = "";
 
-    // formato compatível com iPhone
     const referenciaInicio = new Date("2025/10/07");
-
     const basePattern = ["7h", "7h", "19h", "19h", "F", "F", "F", "F"];
     const offsets = { A: 0, B: 2, C: 4, D: 6 };
     const totalDias = 90;
@@ -144,11 +140,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Define data padrão (hoje)
+  // Data padrão (hoje ou mínima)
   const hoje = new Date();
-  const ano = hoje.getFullYear();
-  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-  const dia = String(hoje.getDate()).padStart(2, "0");
+  const dataPadrao = hoje < dataMinima ? dataMinima : hoje;
+  const ano = dataPadrao.getFullYear();
+  const mes = String(dataPadrao.getMonth() + 1).padStart(2, "0");
+  const dia = String(dataPadrao.getDate()).padStart(2, "0");
   inputData.value = `${ano}-${mes}-${dia}`;
 
   gerarEscala();
