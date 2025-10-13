@@ -1,59 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-<link rel="apple-touch-icon" href="./logoERO.png">
-<link rel="icon" type="image/png" sizes="128x128" href="./logoERO.png">
-<link rel="icon" type="image/png" sizes="192x192" href="./logoERO.png">
-<meta name="theme-color" content="#2A8C89">
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Escala 4x4</title>
-
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: white;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
-h1 { text-align: center; margin-top: 2px; margin-bottom: 1px; font-weight: bold; font-size: 30px; font-family: Arial Black; color: #2A8C89; }
-h2 { text-align: center; margin-top: 1px; margin-bottom: 2px; color: #4A5856; }
-h3 { text-align: center; margin-top: 8px; margin-bottom: 10px; color: #4A5856; }
-
+body { font-family: Arial, sans-serif; margin:0; padding:20px; color:#333; background:#fff;}
+h1,h2,h3 { text-align:center; margin:2px; }
+h1 { font-weight:bold; font-size:30px; color:#2A8C89; font-family:Arial Black; }
+h2,h3 { color:#4A5856; }
 .input-area { text-align:center; margin-bottom:20px; }
-input { text-align: center; padding:8px; font-size:16px; margin:5px; }
-
-/* Tabela principal */
-.tabela {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-  border: 1px solid #D3D3D3;
-  font-size: 15px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.tabela th, .tabela td { border: 1px solid #D3D3D3; padding: 6px; }
-.tabela th {
-  background: #2A8C89;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.status-7h { color: blue; font-weight: bold } /* Dia */
-.status-19h { color: green; font-weight: bold} /* Noite */
-.status-F { background: #E0E0E0; } /* Folga */
+input { text-align:center; padding:8px; font-size:16px; margin:5px; }
+.tabela { width:100%; border-collapse:collapse; text-align:center; border:1px solid #D3D3D3; font-size:15px; background:white; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.tabela th,.tabela td{border:1px solid #D3D3D3; padding:6px;}
+.tabela th{background:#2A8C89;color:white;position:sticky;top:0; z-index:1;}
+.status-7h{color:blue;font-weight:bold;}
+.status-19h{color:green;font-weight:bold;}
+.status-F{background:#E0E0E0;}
 </style>
 </head>
-
 <body>
+
 <div style="text-align:center; margin-bottom:0px;">
-    <img src="./logoERO.png" alt="Logo ERO Brasil" style="max-width:200px; height:auto;">
+<img src="./logoERO.png" alt="Logo ERO Brasil" style="max-width:200px;height:auto;">
 </div>
 
 <h1>ERO BRASIL</h1>
@@ -61,100 +30,93 @@ input { text-align: center; padding:8px; font-size:16px; margin:5px; }
 <h3>Escala de turno 4x4</h3>
 
 <div class="input-area">
-  <label for="dataInicio">Entre com a data inicial para gerar um período de 90 dias</label>
-  <input type="date" id="dataInicio" min="2025-04-01">
+<label for="dataInicio">Entre com a data inicial para gerar um período de 90 dias</label>
+<input type="date" id="dataInicio" min="2025-04-01">
 </div>
 
 <table class="tabela" id="tabelaEscala">
-  <thead>
-    <tr>
-      <th>Data</th>
-      <th>Turma A</th>
-      <th>Turma B</th>
-      <th>Turma C</th>
-      <th>Turma D</th>
-    </tr>
-  </thead>
-  <tbody id="tabelaBody"></tbody>
+<thead>
+<tr>
+<th>Data</th>
+<th>Turma A</th>
+<th>Turma B</th>
+<th>Turma C</th>
+<th>Turma D</th>
+</tr>
+</thead>
+<tbody id="tabelaBody"></tbody>
 </table>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const inputData = document.getElementById("dataInicio");
-  const corpo = document.getElementById("tabelaBody");
+document.addEventListener("DOMContentLoaded",function(){
+const inputData=document.getElementById("dataInicio");
+const corpo=document.getElementById("tabelaBody");
 
-  function parseSafeDate(dateString) {
-    const [ano, mes, dia] = dateString.split("-").map(Number);
-    return new Date(ano, mes - 1, dia);
-  }
+// função para converter data para número YYYYMMDD para comparação simples
+function dataParaNumero(date){
+    return date.getFullYear()*10000 + (date.getMonth()+1)*100 + date.getDate();
+}
 
-  function gerarEscala() {
-    const dataInput = inputData.value;
-    if (!dataInput) {
-      alert("Selecione uma data!");
-      return;
+// cria data segura a partir de string YYYY-MM-DD
+function criarData(dateStr){
+    const [ano,mes,dia]=dateStr.split("-").map(Number);
+    return new Date(ano,mes-1,dia);
+}
+
+function gerarEscala(){
+    if(!inputData.value){ alert("Selecione uma data!"); return;}
+    let dataEscolhida=criarData(inputData.value);
+    const dataMinima=new Date(2025,3,1); // 01/04/2025
+    if(dataParaNumero(dataEscolhida)<dataParaNumero(dataMinima)){
+        alert("A data inicial não pode ser anterior a 01/04/2025!");
+        inputData.value="2025-04-01";
+        dataEscolhida=new Date(2025,3,1);
     }
 
-    let dataEscolhida = parseSafeDate(dataInput);
-    const dataMinima = new Date(2025, 3, 1); // 01/04/2025
+    corpo.innerHTML="";
 
-    if (dataEscolhida < dataMinima) {
-      alert("A data inicial não pode ser anterior a 01/04/2025!");
-      inputData.value = "2025-04-01";
-      dataEscolhida = dataMinima;
-    }
+    const referenciaInicio=new Date(2025,9,7); // 07/10/2025
+    const basePattern=["7h","7h","19h","19h","F","F","F","F"];
+    const offsets={A:0,B:2,C:4,D:6};
+    const totalDias=90;
 
-    corpo.innerHTML = "";
+    for(let i=0;i<totalDias;i++){
+        // cria nova data segura
+        const diaAtual=new Date(dataEscolhida.getFullYear(),dataEscolhida.getMonth(),dataEscolhida.getDate()+i);
 
-    const referenciaInicio = new Date(2025, 9, 7); // 07/10/2025
-    const basePattern = ["7h", "7h", "19h", "19h", "F", "F", "F", "F"];
-    const offsets = { A: 0, B: 2, C: 4, D: 6 };
-    const totalDias = 90;
+        const dataFormatada=diaAtual.toLocaleDateString("pt-BR",{weekday:'short',day:'2-digit',month:'2-digit'});
 
-    for (let i = 0; i < totalDias; i++) {
-      // Cria nova data sem alterar dataEscolhida
-      const diaAtual = new Date(dataEscolhida.getFullYear(), dataEscolhida.getMonth(), dataEscolhida.getDate() + i);
+        const diffDias=Math.floor((diaAtual-referenciaInicio)/(1000*60*60*24));
+        const idx=((diffDias%8)+8)%8;
 
-      const dataFormatada = diaAtual.toLocaleDateString("pt-BR", {
-        weekday: 'short',
-        day: '2-digit',
-        month: '2-digit'
-      });
+        const statusA=basePattern[(idx+offsets.A)%8];
+        const statusB=basePattern[(idx+offsets.B)%8];
+        const statusC=basePattern[(idx+offsets.C)%8];
+        const statusD=basePattern[(idx+offsets.D)%8];
 
-      const diffDias = Math.floor((diaAtual - referenciaInicio) / (1000 * 60 * 60 * 24));
-      const idx = ((diffDias % 8) + 8) % 8;
-
-      const statusA = basePattern[(idx + offsets.A) % 8];
-      const statusB = basePattern[(idx + offsets.B) % 8];
-      const statusC = basePattern[(idx + offsets.C) % 8];
-      const statusD = basePattern[(idx + offsets.D) % 8];
-
-      const linha = document.createElement("tr");
-      linha.innerHTML = `
-        <td><strong>${dataFormatada}</strong></td>
+        const linha=document.createElement("tr");
+        linha.innerHTML=`<td><strong>${dataFormatada}</strong></td>
         <td class="status-${statusA}">${statusA}</td>
         <td class="status-${statusB}">${statusB}</td>
         <td class="status-${statusC}">${statusC}</td>
-        <td class="status-${statusD}">${statusD}</td>
-      `;
-      corpo.appendChild(linha);
+        <td class="status-${statusD}">${statusD}</td>`;
+        corpo.appendChild(linha);
     }
-  }
+}
 
-  // Define data padrão (hoje ou mínima)
-  const hoje = new Date();
-  const dataPadrao = hoje < new Date(2025,3,1) ? new Date(2025,3,1) : hoje;
-  inputData.value = `${dataPadrao.getFullYear()}-${String(dataPadrao.getMonth()+1).padStart(2,'0')}-${String(dataPadrao.getDate()).padStart(2,'0')}`;
+// define data padrão
+const hoje=new Date();
+const dataPadrao= dataParaNumero(hoje)<dataParaNumero(new Date(2025,3,1))? new Date(2025,3,1):hoje;
+inputData.value=`${dataPadrao.getFullYear()}-${String(dataPadrao.getMonth()+1).padStart(2,'0')}-${String(dataPadrao.getDate()).padStart(2,'0')}`;
 
-  gerarEscala();
-  inputData.addEventListener("change", gerarEscala);
+gerarEscala();
+inputData.addEventListener("change",gerarEscala);
 });
 </script>
 
-</body>
-
-<footer style="text-align:center; margin-top:40px; font-size:16px; font-weight:bold; color:#2563eb;">
-  © 2025 - Desenvolvido por Alexandre Oliveira
+<footer style="text-align:center;margin-top:40px;font-size:16px;font-weight:bold;color:#2563eb;">
+© 2025 - Desenvolvido por Alexandre Oliveira
 </footer>
 
+</body>
 </html>
