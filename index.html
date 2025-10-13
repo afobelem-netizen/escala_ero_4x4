@@ -83,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const inputData = document.getElementById("dataInicio");
   const corpo = document.getElementById("tabelaBody");
   const dataMinima = new Date("2025/04/01");
+  dataMinima.setHours(0,0,0,0);
 
   function parseSafeDate(dateString) {
     return new Date(dateString.replace(/-/g, "/"));
@@ -96,7 +97,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     let dataEscolhida = parseSafeDate(dataInput);
+    dataEscolhida.setHours(0,0,0,0);
 
+    // Validação da data mínima
     if (dataEscolhida < dataMinima) {
       alert("A data inicial não pode ser anterior a 01/04/2025!");
       inputData.value = "2025-04-01";
