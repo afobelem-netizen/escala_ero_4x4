@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
   // Corrige a data inicial ao carregar
   if(!inputData.value || new Date(inputData.value) < dataMinima){
-    inputData.value="2025-10-01";
+    inputData.value="2025-10-0";
   }
 
   // Corrige a data se o usuário digitar manualmente algo antes da mínima
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded",function(){
       const ano=parseInt(partes[0]), mes=parseInt(partes[1])-1, dia=parseInt(partes[2]);
       const data=new Date(ano,mes,dia);
       if(data < dataMinima){
-        inputData.value="2025-11-01";
+        inputData.value="2025-10-23";
       }
     }
   });
