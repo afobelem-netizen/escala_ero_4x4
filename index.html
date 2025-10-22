@@ -51,7 +51,7 @@ input { text-align:center; padding:8px; font-size:16px; margin:5px; }
 document.addEventListener("DOMContentLoaded",function(){
   const inputData=document.getElementById("dataInicio");
   const corpo=document.getElementById("tabelaBody");
-  const dataMinima=new Date(2025,10,1);
+  const dataMinima=new Date("2025,10,1");
 
   // Corrige a data inicial ao carregar
   if(!inputData.value || new Date(inputData.value) < dataMinima){
